@@ -1,7 +1,7 @@
 "use client";
 
-import { Button } from "@/src/components/ui/button";
-import { authClient } from "@/src/auth-client";
+import { Button } from "@/components/ui/button";
+import { authClient } from "@/auth-client";
 import { useRouter } from "next/navigation";
 
 export default function ConnectSpotifyButton() {

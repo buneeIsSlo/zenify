@@ -1,7 +1,7 @@
 "use client";
 
-import { authClient } from "@/src/auth-client";
-import { Button } from "@/src/components/ui/button";
+import { authClient } from "@/auth-client";
+import { Button } from "@/components/ui/button";
 
 export default function User() {
   const { data, error } = authClient.useSession();
