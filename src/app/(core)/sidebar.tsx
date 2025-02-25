@@ -21,7 +21,7 @@ export default function Sidebar() {
           <Disc3 className="size-5" />
         </Button>
       </SheetTrigger>
-      <SheetContent>
+      <SheetContent className="overflow-y-scroll">
         <SheetHeader>
           <SheetTitle>Music</SheetTitle>
           <SheetDescription>Your liked songs</SheetDescription>
