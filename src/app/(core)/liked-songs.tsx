@@ -39,7 +39,7 @@ export default function LikedSongs() {
       }
       return response.json();
     },
-    initialPageParam: null as string | null,
+    initialPageParam: 0,
     getNextPageParam: (lastPage) => {
       if (lastPage.offset + lastPage.limit < lastPage.total) {
         return lastPage.offset + lastPage.limit;

@@ -4,8 +4,7 @@ import { auth } from "@/auth";
 
 export async function GET(req: NextRequest) {
   const session = await auth.api.getSession({ headers: req.headers });
-  const { searchParams } = new URL(req.url);
-  const offset = Number(searchParams.get("offset")) || 0;
+  const offset = Number(req.nextUrl.searchParams.get("offset") || "0");
   const limit = 15;
 
   if (!session?.user?.email) {
