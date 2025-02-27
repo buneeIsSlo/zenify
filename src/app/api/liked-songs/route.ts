@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
-import prisma from "@/lib/prisma";
 import { auth } from "@/auth";
+import { spotifyApi } from "@/lib/spotify";
 
 export async function GET(req: NextRequest) {
   const session = await auth.api.getSession({ headers: req.headers });
@@ -12,37 +12,10 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const account = await prisma.account.findFirst({
-      where: {
-        userId: session.user.id,
-        providerId: "spotify",
-      },
-    });
-
-    if (!account?.accessToken) {
-      return Response.json({ error: "No access token found" }, { status: 400 });
-    }
-
-    const response = await fetch(
+    const response = await spotifyApi(
+      session.user.id,
       `https://api.spotify.com/v1/me/tracks?limit=${limit}&offset=${offset}`,
-      {
-        headers: {
-          Authorization: `Bearer ${account.accessToken}`,
-        },
-      },
     );
-
-    if (!response.ok) {
-      console.error(
-        "Spotify API error: ",
-        response.status,
-        response.statusText,
-      );
-      return Response.json(
-        { error: "Failed to fetch liked songs from Spotify" },
-        { status: 500 },
-      );
-    }
 
     const data = await response.json();
 
