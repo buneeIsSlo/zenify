@@ -1,5 +1,7 @@
 import { Button } from "@/components/ui/button";
-import { Play } from "lucide-react";
+import { Play, Pause } from "lucide-react";
+import { PlaybackContext } from "@/components/playback-context";
+import { useContext } from "react";
 
 interface SongProps {
   track: {
@@ -15,19 +17,30 @@ interface SongProps {
 }
 
 export default function Song({ track, onPlay }: SongProps) {
+  const { currentTrackUri } = useContext(PlaybackContext);
+  const isCurrentlyPlaying = currentTrackUri === track.uri;
+  const { isPlaying } = useContext(PlaybackContext);
+
   return (
-    <div className="flex items-center justify-between rounded p-2 hover:bg-gray-100">
+    <div className="flex items-center justify-between rounded-md bg-neutral-100 p-4">
       <div>
-        <img
-          src={track.album.images[0].url}
-          alt={track.name}
-          className="mr-4 h-12 w-12"
-        />
-        <p>Title: {track.name}</p>
-        <p>Artist: {track.artists.map((artist) => artist.name).join(", ")}</p>
+        <h3
+          className={`font-semibold ${
+            isCurrentlyPlaying && isPlaying ? "text-blue-500" : ""
+          }`}
+        >
+          {track.name}
+        </h3>
+        <p className="text-sm text-zinc-500">
+          {track.artists.map((artist) => artist.name).join(", ")}
+        </p>
       </div>
-      <Button variant="ghost" size="icon" onClick={() => onPlay(track.uri)}>
-        <Play className="h-4 w-4" />
+      <Button size={"icon"} onClick={() => onPlay(track.uri)}>
+        {isCurrentlyPlaying && isPlaying ? (
+          <Pause className="size-4" />
+        ) : (
+          <Play className="size-4" />
+        )}
       </Button>
     </div>
   );

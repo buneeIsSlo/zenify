@@ -1,28 +1,20 @@
 "use client";
 
 import { useInfiniteQuery } from "@tanstack/react-query";
-import Song from "./song";
 import InfiniteScrollContainer from "@/components/infinite-scroll-container";
-
-interface SpotifyTrack {
-  id: string;
-  name: string;
-  uri: string;
-  artists: { name: string }[];
-  album: {
-    name: string;
-    images: { url: string }[];
-  };
-}
+import Song from "./song";
+import { PlaybackContext } from "@/components/playback-context";
+import { useContext } from "react";
 
 interface SpotifyResponse {
-  items: { track: SpotifyTrack }[];
-  total: number;
+  items: { track: any }[];
   limit: number;
   offset: number;
+  total: number;
 }
 
 export default function LikedSongs() {
+  const { setCurrentTrackUri } = useContext(PlaybackContext);
   const {
     data,
     isFetching,
@@ -63,8 +55,8 @@ export default function LikedSongs() {
             key={track.id}
             track={track}
             onPlay={(uri) => {
-              // temp
-              console.log("Playing:", uri);
+              console.log(`setCurrentTrackUri called with URI: ${uri}`);
+              setCurrentTrackUri(uri);
             }}
           />
         )),

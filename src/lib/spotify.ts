@@ -67,7 +67,7 @@ export async function spotifyApi(
   });
 
   if (!account) {
-    throw new Error("No sptofiy account found");
+    throw new Error("No spotify account found");
   }
 
   const isExpired =
