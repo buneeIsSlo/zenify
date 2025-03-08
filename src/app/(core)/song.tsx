@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Play, Pause } from "lucide-react";
-import { PlaybackContext } from "@/components/playback-context";
-import { useContext } from "react";
+import { useSpotifyPlaybackStore } from "@/hooks/use-spotify-playback-store";
 
 interface SongProps {
   track: {
@@ -17,9 +16,8 @@ interface SongProps {
 }
 
 export default function Song({ track, onPlay }: SongProps) {
-  const { currentTrackUri } = useContext(PlaybackContext);
+  const { currentTrackUri, isPlaying } = useSpotifyPlaybackStore();
   const isCurrentlyPlaying = currentTrackUri === track.uri;
-  const { isPlaying } = useContext(PlaybackContext);
 
   return (
     <div className="flex items-center justify-between rounded-md bg-neutral-100 p-4">

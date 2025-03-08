@@ -1,9 +1,9 @@
 "use client";
 
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { PlaybackContext } from "./playback-context";
 import { Button } from "./ui/button";
+import { useSpotifyPlaybackStore } from "@/hooks/use-spotify-playback-store";
 
 interface SpotifyPlayer extends Spotify.Player {}
 
@@ -32,7 +32,7 @@ const SpotifyPlayback = () => {
     useState<SpotifyApi.TrackObjectFull | null>(null);
   const [currentTrackName, setCurrentTrackName] = useState<string | null>(null);
   const { isPlaying, setIsPlaying, currentTrackUri } =
-    useContext(PlaybackContext);
+    useSpotifyPlaybackStore();
 
   const { data } = useQuery({
     queryKey: ["access-token"],
