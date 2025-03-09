@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "./ui/button";
 import { useSpotifyPlaybackStore } from "@/hooks/use-spotify-playback-store";
+import { PlaybackProgress } from "@/app/(core)/playback-progress";
+import { Pause, Play } from "lucide-react";
 
 interface SpotifyPlayer extends Spotify.Player {}
 
@@ -31,8 +33,16 @@ const SpotifyPlayback = () => {
   const [currentTrack, setCurrentTrack] =
     useState<SpotifyApi.TrackObjectFull | null>(null);
   const [currentTrackName, setCurrentTrackName] = useState<string | null>(null);
-  const { isPlaying, setIsPlaying, currentTrackUri } =
-    useSpotifyPlaybackStore();
+  const {
+    isPlaying,
+    setIsPlaying,
+    currentTrackUri,
+    position,
+    duration,
+    setPosition,
+    setDuration,
+    setPlayer: setPlayerStore,
+  } = useSpotifyPlaybackStore();
 
   const { data } = useQuery({
     queryKey: ["access-token"],
@@ -58,7 +68,7 @@ const SpotifyPlayback = () => {
         getOAuthToken: (cb: (token: string) => void) => {
           cb(accessToken);
         },
-        volumen: 0.5,
+        volumen: 0,
       });
 
       spotifyPlayer.addListener(
@@ -88,6 +98,8 @@ const SpotifyPlayback = () => {
             track_window: { current_track },
           } = state;
 
+          setPosition(position);
+          setDuration(duration);
           setCurrentTrack(current_track as SpotifyApi.TrackObjectFull);
           setCurrentTrackName(current_track.name);
           setIsPlaying(!paused);
@@ -96,6 +108,7 @@ const SpotifyPlayback = () => {
 
       spotifyPlayer.connect();
       setPlayer(spotifyPlayer as SpotifyPlayer);
+      setPlayerStore(spotifyPlayer as Spotify.Player);
     };
 
     const script = document.createElement("script");
@@ -114,6 +127,21 @@ const SpotifyPlayback = () => {
       playTrack(currentTrackUri, deviceId, accessToken);
     }
   }, [player, deviceId, currentTrackUri]);
+
+  // Add this near your other useEffect hooks
+  useEffect(() => {
+    if (!player || !isPlaying) return;
+
+    const interval = setInterval(() => {
+      player.getCurrentState().then((state) => {
+        if (state) {
+          setPosition(state.position);
+        }
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [player, isPlaying]);
 
   const playTrack = async (
     uri: string,
@@ -157,16 +185,36 @@ const SpotifyPlayback = () => {
     }
   };
 
+  const handleSeek = async (position: number) => {
+    if (!player) return;
+    await player.seek(position);
+  };
+
   return (
-    <div className="w-fullj fixed bottom-0 left-0 right-0 flex items-center justify-between bg-secondary p-3">
-      {currentTrackName ? (
-        <div>🎵 Now Playing: {currentTrackName}</div>
-      ) : (
-        <div>Select a track to start playing</div>
-      )}
-      <Button className="mr-32" onClick={togglePlay}>
-        {isPlaying ? "Pause" : "Play"}
-      </Button>
+    <div className="fixed bottom-0 left-0 right-0 bg-secondary p-3">
+      <div className="flex items-center justify-center gap-4">
+        <div className="flex items-center gap-4">
+          <Button size={"icon"} onClick={togglePlay}>
+            {isPlaying ? (
+              <Pause className="size-4" />
+            ) : (
+              <Play className="size-4" />
+            )}
+          </Button>
+          {currentTrackName ? (
+            <div>🎵 Now Playing: {currentTrackName}</div>
+          ) : (
+            <div>Select a track to start playing</div>
+          )}
+        </div>
+        <div className="flex-[0.5]">
+          <PlaybackProgress
+            position={position}
+            duration={duration}
+            onSeek={handleSeek}
+          />
+        </div>
+      </div>
     </div>
   );
 };
