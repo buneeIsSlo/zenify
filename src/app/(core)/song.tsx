@@ -3,15 +3,7 @@ import { Play, Pause } from "lucide-react";
 import { useSpotifyPlaybackStore } from "@/hooks/use-spotify-playback-store";
 
 interface SongProps {
-  track: {
-    id: string;
-    name: string;
-    artists: { name: string }[];
-    uri: string; // Spotify URI needed for playback
-    album: {
-      images: { url: string }[];
-    };
-  };
+  track: Spotify.Track;
 }
 
 export default function Song({ track }: SongProps) {

@@ -7,31 +7,10 @@ import { useSpotifyPlaybackStore } from "@/hooks/use-spotify-playback-store";
 import { PlaybackProgress } from "@/app/(core)/playback-progress";
 import { Pause, Play } from "lucide-react";
 
-interface SpotifyPlayer extends Spotify.Player {}
-
-declare global {
-  interface Window {
-    onSpotifyWebPlaybackSDKReady: () => void;
-    Spotify: any;
-  }
-
-  namespace Spotify {
-    interface PlaybackState {
-      position: number;
-      duration: number;
-      paused: boolean;
-      track_window: {
-        current_track: SpotifyApi.TrackObjectFull;
-      };
-    }
-  }
-}
-
 const SpotifyPlayback = () => {
   const [deviceId, setDeviceId] = useState<string | null>(null);
-  const [player, setPlayer] = useState<SpotifyPlayer | null>(null);
-  const [currentTrack, setCurrentTrack] =
-    useState<SpotifyApi.TrackObjectFull | null>(null);
+  const [player, setPlayer] = useState<Spotify.Player | null>(null);
+  const [currentTrack, setCurrentTrack] = useState<Spotify.Track | null>(null);
   const [currentTrackName, setCurrentTrackName] = useState<string | null>(null);
   const {
     isPlaying,
@@ -68,12 +47,12 @@ const SpotifyPlayback = () => {
         getOAuthToken: (cb: (token: string) => void) => {
           cb(accessToken);
         },
-        volumen: 0,
+        volume: 0.5,
       });
 
       spotifyPlayer.addListener(
         "ready",
-        ({ device_id }: { device_id: string }) => {
+        ({ device_id }: Spotify.WebPlaybackInstance) => {
           console.log("Ready with Device ID", device_id);
           setDeviceId(device_id);
         },
@@ -81,7 +60,7 @@ const SpotifyPlayback = () => {
 
       spotifyPlayer.addListener(
         "not_ready",
-        ({ device_id }: { device_id: string }) => {
+        ({ device_id }: Spotify.WebPlaybackInstance) => {
           console.log("Device ID has gone offline", device_id);
         },
       );
@@ -100,15 +79,15 @@ const SpotifyPlayback = () => {
 
           setPosition(position);
           setDuration(duration);
-          setCurrentTrack(current_track as SpotifyApi.TrackObjectFull);
+          setCurrentTrack(current_track as Spotify.Track);
           setCurrentTrackName(current_track.name);
           setIsPlaying(!paused);
         },
       );
 
       spotifyPlayer.connect();
-      setPlayer(spotifyPlayer as SpotifyPlayer);
-      setPlayerStore(spotifyPlayer as Spotify.Player);
+      setPlayer(spotifyPlayer);
+      setPlayerStore(spotifyPlayer);
     };
 
     const script = document.createElement("script");
@@ -128,7 +107,6 @@ const SpotifyPlayback = () => {
     }
   }, [player, deviceId, currentTrackUri]);
 
-  // Add this near your other useEffect hooks
   useEffect(() => {
     if (!player || !isPlaying) return;
 
@@ -149,7 +127,7 @@ const SpotifyPlayback = () => {
     accessToken: string,
   ) => {
     if (!accessToken) {
-      console.error("No access token avialable");
+      console.error("No access token available");
       return;
     }
 

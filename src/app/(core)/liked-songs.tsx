@@ -6,7 +6,7 @@ import Song from "./song";
 import { useSpotifyPlaybackStore } from "@/hooks/use-spotify-playback-store";
 
 interface SpotifyResponse {
-  items: { track: any }[];
+  items: { track: Spotify.Track }[];
   limit: number;
   offset: number;
   total: number;
@@ -49,16 +49,7 @@ export default function LikedSongs() {
       onBottomReached={() => hasNextPage && !isFetching && fetchNextPage()}
     >
       {data?.pages.map((page) =>
-        page.items.map(({ track }) => (
-          <Song
-            key={track.id}
-            track={track}
-            onPlay={(uri) => {
-              console.log(`setCurrentTrackUri called with URI: ${uri}`);
-              setCurrentTrackUri(uri);
-            }}
-          />
-        )),
+        page.items.map(({ track }) => <Song key={track.id} track={track} />),
       )}
       {isFetchingNextPage && <div>Loading more...</div>}
     </InfiniteScrollContainer>
