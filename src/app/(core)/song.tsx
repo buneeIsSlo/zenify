@@ -7,8 +7,8 @@ interface SongProps {
 }
 
 export default function Song({ track }: SongProps) {
-  const { currentTrackUri, isPlaying, setCurrentTrackUri, togglePlayback } =
-    useSpotifyPlaybackStore();
+  const { playback, setPlayback, togglePlayback } = useSpotifyPlaybackStore();
+  const { currentTrackUri, isPlaying } = playback;
 
   const isCurrentlyPlaying = currentTrackUri === track.uri;
 
@@ -18,7 +18,7 @@ export default function Song({ track }: SongProps) {
       togglePlayback();
     } else {
       // Start a new track
-      setCurrentTrackUri(track.uri);
+      setPlayback({ currentTrackUri: track.uri });
     }
   };
 

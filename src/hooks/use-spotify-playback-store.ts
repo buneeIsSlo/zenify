@@ -1,38 +1,46 @@
 import { create } from "zustand";
 
 interface SpotifyPlaybackStore {
-  currentTrackUri: string | null;
-  isPlaying: boolean;
-  setCurrentTrackUri: (uri: string | null) => void;
-  setIsPlaying: (playing: boolean) => void;
-  position: number;
-  duration: number;
-  setPosition: (position: number) => void;
-  setDuration: (duration: number) => void;
+  playback: {
+    currentTrackUri: string | null;
+    currentTrack: Spotify.Track | null;
+    isPlaying: boolean;
+    position: number;
+    duration: number;
+  };
   player: Spotify.Player | null;
+  setPlayback: (playback: Partial<SpotifyPlaybackStore["playback"]>) => void;
   setPlayer: (player: Spotify.Player | null) => void;
   togglePlayback: () => void;
 }
 
 export const useSpotifyPlaybackStore = create<SpotifyPlaybackStore>(
   (set, get) => ({
-    currentTrackUri: null,
-    isPlaying: false,
+    playback: {
+      currentTrackUri: null,
+      currentTrack: null,
+      isPlaying: false,
+      position: 0,
+      duration: 0,
+    },
+    setPlayback: (update) =>
+      set((state) => ({
+        playback: { ...state.playback, ...update },
+      })),
     player: null,
-    setCurrentTrackUri: (uri) => set({ currentTrackUri: uri }),
-    setIsPlaying: (playing) => set({ isPlaying: playing }),
-    position: 0,
-    setPosition: (position) => set({ position }),
-    duration: 0,
-    setDuration: (duration) => set({ duration }),
     setPlayer: (player) => set({ player }),
     togglePlayback: async () => {
-      const { player, isPlaying } = get();
+      const { player, playback } = get();
       if (!player) return;
 
       try {
         await (player as Spotify.Player).togglePlay();
-        set({ isPlaying: !isPlaying });
+        set({
+          playback: {
+            ...playback,
+            isPlaying: !playback.isPlaying,
+          },
+        });
       } catch (error) {
         console.error("Error toggling playback:", error);
       }

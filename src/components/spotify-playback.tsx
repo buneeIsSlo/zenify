@@ -9,19 +9,10 @@ import { Pause, Play } from "lucide-react";
 
 const SpotifyPlayback = () => {
   const [deviceId, setDeviceId] = useState<string | null>(null);
-  const [player, setPlayer] = useState<Spotify.Player | null>(null);
-  const [currentTrack, setCurrentTrack] = useState<Spotify.Track | null>(null);
-  const [currentTrackName, setCurrentTrackName] = useState<string | null>(null);
-  const {
-    isPlaying,
-    setIsPlaying,
-    currentTrackUri,
-    position,
-    duration,
-    setPosition,
-    setDuration,
-    setPlayer: setPlayerStore,
-  } = useSpotifyPlaybackStore();
+  const { togglePlayback, playback, player, setPlayback, setPlayer } =
+    useSpotifyPlaybackStore();
+  const { currentTrack, currentTrackUri, isPlaying, position, duration } =
+    playback;
 
   const { data } = useQuery({
     queryKey: ["access-token"],
@@ -77,17 +68,17 @@ const SpotifyPlayback = () => {
             track_window: { current_track },
           } = state;
 
-          setPosition(position);
-          setDuration(duration);
-          setCurrentTrack(current_track as Spotify.Track);
-          setCurrentTrackName(current_track.name);
-          setIsPlaying(!paused);
+          setPlayback({
+            position,
+            duration,
+            currentTrack: current_track,
+            isPlaying: !paused,
+          });
         },
       );
 
       spotifyPlayer.connect();
       setPlayer(spotifyPlayer);
-      setPlayerStore(spotifyPlayer);
     };
 
     const script = document.createElement("script");
@@ -113,7 +104,7 @@ const SpotifyPlayback = () => {
     const interval = setInterval(() => {
       player.getCurrentState().then((state) => {
         if (state) {
-          setPosition(state.position);
+          setPlayback({ position: state.position });
         }
       });
     }, 1000);
@@ -152,17 +143,6 @@ const SpotifyPlayback = () => {
     }
   };
 
-  const togglePlay = async () => {
-    if (!player) return;
-
-    try {
-      player.togglePlay();
-      setIsPlaying(!isPlaying);
-    } catch (error) {
-      console.error("Error toggling play:", error);
-    }
-  };
-
   const handleSeek = async (position: number) => {
     if (!player) return;
     await player.seek(position);
@@ -172,15 +152,15 @@ const SpotifyPlayback = () => {
     <div className="fixed bottom-0 left-0 right-0 bg-secondary p-3">
       <div className="flex items-center justify-center gap-4">
         <div className="flex items-center gap-4">
-          <Button size={"icon"} onClick={togglePlay}>
+          <Button size={"icon"} onClick={togglePlayback}>
             {isPlaying ? (
               <Pause className="size-4" />
             ) : (
               <Play className="size-4" />
             )}
           </Button>
-          {currentTrackName ? (
-            <div>🎵 Now Playing: {currentTrackName}</div>
+          {currentTrack ? (
+            <div>🎵 Now Playing: {currentTrack.name}</div>
           ) : (
             <div>Select a track to start playing</div>
           )}

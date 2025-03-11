@@ -3,7 +3,6 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import InfiniteScrollContainer from "@/components/infinite-scroll-container";
 import Song from "./song";
-import { useSpotifyPlaybackStore } from "@/hooks/use-spotify-playback-store";
 
 interface SpotifyResponse {
   items: { track: Spotify.Track }[];
@@ -13,7 +12,6 @@ interface SpotifyResponse {
 }
 
 export default function LikedSongs() {
-  const { setCurrentTrackUri } = useSpotifyPlaybackStore();
   const {
     data,
     isFetching,
