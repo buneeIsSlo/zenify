@@ -17,7 +17,7 @@ export default function Sidebar() {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant={"outline"} size={"icon"}>
+        <Button variant={"secondary"} size={"icon"}>
           <Disc3 className="size-5" />
         </Button>
       </SheetTrigger>

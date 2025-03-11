@@ -40,7 +40,7 @@ const NowPlaying = () => {
 export default function Page() {
   return (
     <div className="flex h-screen flex-col">
-      <header className="flex items-center justify-between bg-neutral-100 p-4">
+      <header className="flex items-center justify-between p-4">
         <h1 className="text-3xl font-bold">Zenify</h1>
         <Sidebar />
       </header>

@@ -160,7 +160,7 @@ const SpotifyPlayback = () => {
             )}
           </Button>
           {currentTrack ? (
-            <div>🎵 Now Playing: {currentTrack.name}</div>
+            <div>🎼 Now Playing: {currentTrack.name}</div>
           ) : (
             <div>Select a track to start playing</div>
           )}
