@@ -2,15 +2,21 @@
 
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Button } from "./ui/button";
 import { useSpotifyPlaybackStore } from "@/hooks/use-spotify-playback-store";
-import { PlaybackProgress } from "@/app/(core)/playback-progress";
-import { Pause, Play } from "lucide-react";
+import { CompactPlayer } from "./player/compact";
+import { ExpandedPlayer } from "./player/expanded";
+import { BasicPlayer } from "./player/basic";
 
 const SpotifyPlayback = () => {
   const [deviceId, setDeviceId] = useState<string | null>(null);
-  const { togglePlayback, playback, player, setPlayback, setPlayer } =
-    useSpotifyPlaybackStore();
+  const {
+    togglePlayback,
+    playback,
+    player,
+    setPlayback,
+    setPlayer,
+    playerVariant,
+  } = useSpotifyPlaybackStore();
   const { currentTrack, currentTrackUri, isPlaying, position, duration } =
     playback;
 
@@ -148,33 +154,28 @@ const SpotifyPlayback = () => {
     await player.seek(position);
   };
 
-  return (
-    <div className="fixed bottom-0 left-0 right-0 bg-secondary p-3">
-      <div className="flex items-center justify-center gap-4">
-        <div className="flex items-center gap-4">
-          <Button size={"icon"} onClick={togglePlayback}>
-            {isPlaying ? (
-              <Pause className="size-4" />
-            ) : (
-              <Play className="size-4" />
-            )}
-          </Button>
-          {currentTrack ? (
-            <div>🎼 Now Playing: {currentTrack.name}</div>
-          ) : (
-            <div>Select a track to start playing</div>
-          )}
-        </div>
-        <div className="flex-[0.5]">
-          <PlaybackProgress
-            position={position}
-            duration={duration}
-            onSeek={handleSeek}
-          />
-        </div>
-      </div>
-    </div>
-  );
+  const renderPlayerVariant = () => {
+    const props = {
+      currentTrack,
+      isPlaying,
+      position,
+      duration,
+      onTogglePlay: togglePlayback,
+      onSeek: handleSeek,
+    };
+
+    switch (playerVariant) {
+      case "compact":
+        return <CompactPlayer {...props} />;
+      case "expanded":
+        return <ExpandedPlayer {...props} />;
+      case "basic":
+      default:
+        return <BasicPlayer {...props} />;
+    }
+  };
+
+  return renderPlayerVariant();
 };
 
 export default SpotifyPlayback;

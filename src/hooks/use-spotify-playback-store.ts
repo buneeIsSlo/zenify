@@ -1,5 +1,7 @@
 import { create } from "zustand";
 
+export type PlayerVariant = "basic" | "compact" | "expanded";
+
 interface SpotifyPlaybackStore {
   playback: {
     currentTrackUri: string | null;
@@ -9,8 +11,10 @@ interface SpotifyPlaybackStore {
     duration: number;
   };
   player: Spotify.Player | null;
+  playerVariant: PlayerVariant;
   setPlayback: (playback: Partial<SpotifyPlaybackStore["playback"]>) => void;
   setPlayer: (player: Spotify.Player | null) => void;
+  setPlayerVariant: (variant: PlayerVariant) => void;
   togglePlayback: () => void;
 }
 
@@ -23,12 +27,14 @@ export const useSpotifyPlaybackStore = create<SpotifyPlaybackStore>(
       position: 0,
       duration: 0,
     },
+    player: null,
+    playerVariant: "basic",
     setPlayback: (update) =>
       set((state) => ({
         playback: { ...state.playback, ...update },
       })),
-    player: null,
     setPlayer: (player) => set({ player }),
+    setPlayerVariant: (variant) => set({ playerVariant: variant }),
     togglePlayback: async () => {
       const { player, playback } = get();
       if (!player) return;

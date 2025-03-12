@@ -9,7 +9,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Disc3 } from "lucide-react";
+import { Music } from "lucide-react";
 import LikedSongs from "./liked-songs";
 import User from "./user";
 
@@ -18,7 +18,7 @@ export default function Sidebar() {
     <Sheet>
       <SheetTrigger asChild>
         <Button variant={"secondary"} size={"icon"}>
-          <Disc3 className="size-5" />
+          <Music className="size-5" />
         </Button>
       </SheetTrigger>
       <SheetContent className="overflow-y-scroll">
