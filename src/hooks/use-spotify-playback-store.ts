@@ -89,56 +89,20 @@ export const useSpotifyPlaybackStore = create<SpotifyPlaybackStore>(
       }));
     },
     nextTrack: async () => {
-      const { player, trackQueue } = get();
+      const { player } = get();
       if (!player) return;
 
       try {
-        const nextIndex = trackQueue.currentIndex + 1;
-
-        if (nextIndex > trackQueue.uris.length) {
-          throw Error("No more tracks in queue");
-        }
-
-        const nextUri = trackQueue.uris[nextIndex];
-        set((state) => ({
-          trackQueue: {
-            ...state.trackQueue,
-            currentIndex: nextIndex,
-          },
-          playback: {
-            ...state.playback,
-            currentTrackUri: nextUri,
-          },
-        }));
-
         await player.nextTrack();
       } catch (error) {
         console.error("Error skipping to next track:", error);
       }
     },
     previousTrack: async () => {
-      const { player, trackQueue } = get();
+      const { player } = get();
       if (!player) return;
 
       try {
-        const prevIndex = trackQueue.currentIndex - 1;
-
-        if (prevIndex < 0) {
-          throw Error("No previous tracks in queue");
-        }
-
-        const prevUri = trackQueue.uris[prevIndex];
-        set((state) => ({
-          trackQueue: {
-            ...state.trackQueue,
-            currentIndex: prevIndex,
-          },
-          playback: {
-            ...state.playback,
-            currentTrackUri: prevUri,
-          },
-        }));
-
         await player.previousTrack();
       } catch (error) {
         console.error("Error going to previous track:", error);
