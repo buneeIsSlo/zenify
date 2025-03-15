@@ -4,10 +4,11 @@ import { useSpotifyPlaybackStore } from "@/hooks/use-spotify-playback-store";
 
 interface SongProps {
   track: Spotify.Track;
+  index: number;
 }
 
-export default function Song({ track }: SongProps) {
-  const { playback, setPlayback, togglePlayback } = useSpotifyPlaybackStore();
+export default function Song({ track, index }: SongProps) {
+  const { playback, playTrackAt, togglePlayback } = useSpotifyPlaybackStore();
   const { currentTrackUri, isPlaying } = playback;
 
   const isCurrentlyPlaying = currentTrackUri === track.uri;
@@ -18,7 +19,7 @@ export default function Song({ track }: SongProps) {
       togglePlayback();
     } else {
       // Start a new track
-      setPlayback({ currentTrackUri: track.uri });
+      playTrackAt(track.uri, index);
     }
   };
 

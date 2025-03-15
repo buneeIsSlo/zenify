@@ -16,6 +16,8 @@ const SpotifyPlayback = () => {
     setPlayback,
     setPlayer,
     playerVariant,
+    nextTrack,
+    previousTrack,
   } = useSpotifyPlaybackStore();
   const { currentTrack, currentTrackUri, isPlaying, position, duration } =
     playback;
@@ -35,10 +37,14 @@ const SpotifyPlayback = () => {
   const accessToken = data?.accessToken;
 
   useEffect(() => {
+    console.log("Player state:", { player, deviceId, currentTrack, isPlaying });
+  }, [player, deviceId, currentTrack, isPlaying]);
+
+  useEffect(() => {
     if (!accessToken) return;
 
     window.onSpotifyWebPlaybackSDKReady = () => {
-      console.log("Spotify Web Playback SDK Ready!");
+      console.log("SDK Ready - initializing player");
       const spotifyPlayer = new window.Spotify.Player({
         name: "Zenify",
         getOAuthToken: (cb: (token: string) => void) => {
@@ -50,22 +56,19 @@ const SpotifyPlayback = () => {
       spotifyPlayer.addListener(
         "ready",
         ({ device_id }: Spotify.WebPlaybackInstance) => {
-          console.log("Ready with Device ID", device_id);
+          console.log("Player ready with device ID:", device_id);
           setDeviceId(device_id);
-        },
-      );
-
-      spotifyPlayer.addListener(
-        "not_ready",
-        ({ device_id }: Spotify.WebPlaybackInstance) => {
-          console.log("Device ID has gone offline", device_id);
         },
       );
 
       spotifyPlayer.addListener(
         "player_state_changed",
         (state: Spotify.PlaybackState) => {
-          if (!state) return;
+          console.log("Player state changed:", state);
+          if (!state) {
+            console.log("No state received");
+            return;
+          }
 
           const {
             position,
@@ -100,7 +103,7 @@ const SpotifyPlayback = () => {
   useEffect(() => {
     console.log(`currentTrackUri changed: ${currentTrackUri}`);
     if (player && deviceId && currentTrackUri) {
-      playTrack(currentTrackUri, deviceId, accessToken);
+      playTrack(deviceId, accessToken);
     }
   }, [player, deviceId, currentTrackUri]);
 
@@ -118,17 +121,16 @@ const SpotifyPlayback = () => {
     return () => clearInterval(interval);
   }, [player, isPlaying]);
 
-  const playTrack = async (
-    uri: string,
-    deviceId: string,
-    accessToken: string,
-  ) => {
+  const playTrack = async (deviceId: string, accessToken: string) => {
     if (!accessToken) {
       console.error("No access token available");
       return;
     }
 
     try {
+      const { trackQueue } = useSpotifyPlaybackStore.getState();
+      console.log("Playing track with queue:", trackQueue);
+
       const response = await fetch(
         `https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`,
         {
@@ -137,7 +139,10 @@ const SpotifyPlayback = () => {
             Authorization: `Bearer ${accessToken}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ uris: [uri] }),
+          body: JSON.stringify({
+            uris: trackQueue.uris,
+            offset: { position: trackQueue.currentIndex },
+          }),
         },
       );
 
@@ -162,6 +167,8 @@ const SpotifyPlayback = () => {
       duration,
       onTogglePlay: togglePlayback,
       onSeek: handleSeek,
+      onNext: nextTrack,
+      onPrevious: previousTrack,
     };
 
     switch (playerVariant) {

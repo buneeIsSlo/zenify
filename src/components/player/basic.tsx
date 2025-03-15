@@ -10,6 +10,8 @@ export interface PlayerUIProps {
   duration: number;
   onTogglePlay: () => void;
   onSeek: (position: number) => void;
+  onNext: () => void;
+  onPrevious: () => void;
 }
 
 export const BasicPlayer = ({

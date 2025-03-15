@@ -3,6 +3,8 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import InfiniteScrollContainer from "@/components/infinite-scroll-container";
 import Song from "./song";
+import { useSpotifyPlaybackStore } from "@/hooks/use-spotify-playback-store";
+import { useEffect } from "react";
 
 interface SpotifyResponse {
   items: { track: Spotify.Track }[];
@@ -12,6 +14,8 @@ interface SpotifyResponse {
 }
 
 export default function LikedSongs() {
+  const { addTracksToQueue } = useSpotifyPlaybackStore();
+
   const {
     data,
     isFetching,
@@ -38,6 +42,15 @@ export default function LikedSongs() {
     staleTime: 5 * 60 * 1000,
   });
 
+  useEffect(() => {
+    if (data?.pages) {
+      const uris = data.pages.flatMap((page) =>
+        page.items.map(({ track }) => track.uri),
+      );
+      addTracksToQueue(uris);
+    }
+  }, [data, addTracksToQueue]);
+
   if (status === "pending") return <div>Please wait...</div>;
   if (status === "error") return <div>Error loading songs</div>;
 
@@ -46,8 +59,11 @@ export default function LikedSongs() {
       className="space-y-2"
       onBottomReached={() => hasNextPage && !isFetching && fetchNextPage()}
     >
-      {data?.pages.map((page) =>
-        page.items.map(({ track }) => <Song key={track.id} track={track} />),
+      {data?.pages.map((page, pageIndex) =>
+        page.items.map(({ track }, trackIndex) => {
+          const globalIndex = pageIndex * page.limit + trackIndex;
+          return <Song key={track.id} track={track} index={globalIndex} />;
+        }),
       )}
       {isFetchingNextPage && <div>Loading more...</div>}
     </InfiniteScrollContainer>

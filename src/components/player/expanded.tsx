@@ -1,9 +1,7 @@
-// src/components/player/expanded.tsx
 import { Button } from "@/components/ui/button";
 import { Pause, Play, SkipBack, SkipForward } from "lucide-react";
 import { PlaybackProgress } from "@/app/(core)/playback-progress";
 import { PlayerUIProps } from "./basic";
-import { formatTime } from "@/lib/utils";
 import { EmptyState } from "./empty-state";
 
 export const ExpandedPlayer = ({
@@ -13,6 +11,8 @@ export const ExpandedPlayer = ({
   duration,
   onTogglePlay,
   onSeek,
+  onNext,
+  onPrevious,
 }: PlayerUIProps) => {
   if (!currentTrack) {
     return <EmptyState />;
@@ -53,6 +53,7 @@ export const ExpandedPlayer = ({
             size="icon"
             variant="ghost"
             className="text-white hover:bg-white/20"
+            onClick={onPrevious}
           >
             <SkipBack className="size-5" />
           </Button>
@@ -74,6 +75,7 @@ export const ExpandedPlayer = ({
             size="icon"
             variant="ghost"
             className="text-white hover:bg-white/20"
+            onClick={onNext}
           >
             <SkipForward className="size-5" />
           </Button>
