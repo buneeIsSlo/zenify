@@ -81,6 +81,7 @@ const SpotifyPlayback = () => {
             position,
             duration,
             currentTrack: current_track,
+            currentTrackUri: current_track.uri,
             isPlaying: !paused,
           });
         },
@@ -103,7 +104,12 @@ const SpotifyPlayback = () => {
   useEffect(() => {
     console.log(`currentTrackUri changed: ${currentTrackUri}`);
     if (player && deviceId && currentTrackUri) {
-      playTrack(deviceId, accessToken);
+      const { trackQueue } = useSpotifyPlaybackStore.getState();
+      const isManualChange =
+        trackQueue.uris[trackQueue.currentIndex] === currentTrackUri;
+      if (isManualChange) {
+        playTrack(deviceId, accessToken);
+      }
     }
   }, [player, deviceId, currentTrackUri]);
 
