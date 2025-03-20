@@ -9,22 +9,25 @@ interface SongProps {
 
 export default function Song({ track, index }: SongProps) {
   const { playback, playTrackAt, togglePlayback } = useSpotifyPlaybackStore();
-  const { currentTrackUri, isPlaying } = playback;
+  const { isPlaying, currentTrack } = playback;
 
-  const isCurrentlyPlaying = currentTrackUri === track.uri;
+  const isCurrentlyPlaying = currentTrack?.name === track.name;
 
   const handlePlay = () => {
     if (isCurrentlyPlaying) {
-      // This will both update the state and control the player
       togglePlayback();
     } else {
-      // Start a new track
       playTrackAt(track.uri, index);
     }
   };
 
   return (
-    <div className="flex items-center justify-between rounded-md bg-secondary p-4">
+    <div
+      className="flex items-center justify-between rounded-md bg-secondary p-4"
+      data-song-index={index}
+      data-track-id={track.id}
+      data-track-name={track.name}
+    >
       <div>
         <h3
           className={`font-semibold ${

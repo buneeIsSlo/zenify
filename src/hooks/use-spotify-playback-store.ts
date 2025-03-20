@@ -9,6 +9,7 @@ interface SpotifyPlaybackStore {
     isPlaying: boolean;
     position: number;
     duration: number;
+    currentIndex: number;
   };
   player: Spotify.Player | null;
   playerVariant: PlayerVariant;
@@ -34,6 +35,7 @@ export const useSpotifyPlaybackStore = create<SpotifyPlaybackStore>(
       isPlaying: false,
       position: 0,
       duration: 0,
+      currentIndex: -1,
     },
     player: null,
     playerVariant: "basic",
@@ -76,7 +78,7 @@ export const useSpotifyPlaybackStore = create<SpotifyPlaybackStore>(
         };
       });
     },
-    playTrackAt: (uri, index) => {
+    playTrackAt: (uri: string, index: number) => {
       set((state) => ({
         trackQueue: {
           ...state.trackQueue,
@@ -85,25 +87,53 @@ export const useSpotifyPlaybackStore = create<SpotifyPlaybackStore>(
         playback: {
           ...state.playback,
           currentTrackUri: uri,
+          isPlaying: true,
+          currentIndex: index,
         },
       }));
     },
     nextTrack: async () => {
-      const { player } = get();
+      const { player, trackQueue } = get();
       if (!player) return;
 
       try {
         await player.nextTrack();
+
+        const nextIndex = trackQueue.currentIndex + 1;
+        if (nextIndex < trackQueue.uris.length) {
+          set((state) => ({
+            playback: {
+              ...state.playback,
+              currentIndex: nextIndex,
+            },
+            trackQueue: {
+              ...state.trackQueue,
+              currentIndex: nextIndex,
+            },
+          }));
+        }
       } catch (error) {
         console.error("Error skipping to next track:", error);
       }
     },
     previousTrack: async () => {
-      const { player } = get();
+      const { player, trackQueue } = get();
       if (!player) return;
 
       try {
         await player.previousTrack();
+
+        const prevIndex = Math.max(0, trackQueue.currentIndex - 1);
+        set((state) => ({
+          playback: {
+            ...state.playback,
+            currentIndex: prevIndex,
+          },
+          trackQueue: {
+            ...state.trackQueue,
+            currentIndex: prevIndex,
+          },
+        }));
       } catch (error) {
         console.error("Error going to previous track:", error);
       }

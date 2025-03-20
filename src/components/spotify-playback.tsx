@@ -64,25 +64,15 @@ const SpotifyPlayback = () => {
       spotifyPlayer.addListener(
         "player_state_changed",
         (state: Spotify.PlaybackState) => {
-          console.log("Player state changed:", state);
-          if (!state) {
-            console.log("No state received");
-            return;
-          }
+          if (!state) return;
 
-          const {
-            position,
-            duration,
-            paused,
-            track_window: { current_track },
-          } = state;
+          const currentTrack = state.track_window.current_track;
 
           setPlayback({
-            position,
-            duration,
-            currentTrack: current_track,
-            currentTrackUri: current_track.uri,
-            isPlaying: !paused,
+            currentTrack,
+            currentTrackUri: currentTrack.uri,
+            isPlaying: !state.paused,
+            duration: state.duration,
           });
         },
       );
