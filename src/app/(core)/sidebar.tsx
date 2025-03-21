@@ -13,6 +13,8 @@ import LikedSongs from "./liked-songs";
 import User from "./user";
 import { useRef, useState } from "react";
 import { useSpotifyPlaybackStore } from "@/hooks/use-spotify-playback-store";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { PlayerVariantSelector } from "@/components/player/player-variant-selector";
 
 export default function Sidebar() {
   const contentRef = useRef<HTMLDivElement>(null);
@@ -47,18 +49,23 @@ export default function Sidebar() {
           <Music className="size-5" />
         </Button>
       </SheetTrigger>
-      <SheetContent
-        className="overflow-y-scroll"
-        ref={contentRef}
-        onScroll={() => setUserScrolled(true)}
-      >
-        <SheetHeader>
-          <SheetTitle>Music</SheetTitle>
-          <SheetDescription>Your liked songs</SheetDescription>
-        </SheetHeader>
-        <div>
-          <LikedSongs />
-        </div>
+      <SheetContent className="overflow-y-scroll">
+        <Tabs defaultValue="songs" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="songs">Liked Songs</TabsTrigger>
+            <TabsTrigger value="player">Player Settings</TabsTrigger>
+          </TabsList>
+          <TabsContent
+            value="songs"
+            ref={contentRef}
+            onScroll={() => setUserScrolled(true)}
+          >
+            <LikedSongs />
+          </TabsContent>
+          <TabsContent value="player">
+            <PlayerVariantSelector />
+          </TabsContent>
+        </Tabs>
         <SheetFooter>
           <User />
         </SheetFooter>
