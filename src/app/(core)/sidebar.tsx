@@ -2,13 +2,10 @@ import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
   SheetTrigger,
+  SheetClose,
 } from "@/components/ui/sheet";
-import { Music } from "lucide-react";
+import { Cog, Music, X } from "lucide-react";
 import LikedSongs from "./liked-songs";
 import User from "./user";
 import { useRef, useState } from "react";
@@ -21,7 +18,6 @@ export default function Sidebar() {
   const { playback } = useSpotifyPlaybackStore();
   const [userScrolled, setUserScrolled] = useState(false);
 
-  // Function to scroll to current track
   const scrollToCurrentTrack = () => {
     if (!contentRef.current || !playback.currentTrack || userScrolled) return;
 
@@ -43,32 +39,58 @@ export default function Sidebar() {
           setTimeout(scrollToCurrentTrack, 300);
         }
       }}
+      defaultOpen
     >
       <SheetTrigger asChild>
         <Button variant={"secondary"} size={"icon"}>
           <Music className="size-5" />
         </Button>
       </SheetTrigger>
-      <SheetContent className="overflow-y-scroll">
-        <Tabs defaultValue="songs" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="songs">Liked Songs</TabsTrigger>
-            <TabsTrigger value="player">Player Settings</TabsTrigger>
+      <SheetContent className="overflow-y-scroll p-0" hideDefaultClosebutton>
+        <div className="mb-6 flex w-full items-center justify-between">
+          <User />
+          <SheetClose>
+            <X className="size-4" />
+          </SheetClose>
+        </div>
+        <Tabs defaultValue="music" className="w-full">
+          <TabsList className="mb-4 grid h-auto w-full grid-cols-2 rounded-none border-b border-border bg-transparent p-0">
+            <TabsTrigger
+              value="music"
+              className="group relative flex items-center gap-2 rounded-none px-4 py-2 after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=active]:shadow-none data-[state=active]:after:bg-gradient-to-l data-[state=active]:after:from-[#06b6d4] data-[state=active]:after:via-[#2563eb] data-[state=active]:after:to-[#6366f1]"
+            >
+              <Music
+                className="size-4 text-white opacity-60 group-data-[state=active]:opacity-100"
+                strokeWidth={2}
+              />
+              <span>Music</span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="settings"
+              className="group relative flex items-center gap-2 rounded-none px-4 py-2 after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=active]:shadow-none data-[state=active]:after:bg-gradient-to-l data-[state=active]:after:from-[#06b6d4] data-[state=active]:after:via-[#2563eb] data-[state=active]:after:to-[#6366f1]"
+            >
+              <Cog
+                className="size-4 text-white opacity-60 group-data-[state=active]:opacity-100"
+                strokeWidth={2}
+              />
+              <span>Settings</span>
+            </TabsTrigger>
           </TabsList>
           <TabsContent
-            value="songs"
+            value="music"
             ref={contentRef}
             onScroll={() => setUserScrolled(true)}
+            className=""
           >
             <LikedSongs />
           </TabsContent>
-          <TabsContent value="player">
+          <TabsContent
+            value="settings"
+            className="mt-0 p-4 text-center text-xs text-muted-foreground"
+          >
             <PlayerVariantSelector />
           </TabsContent>
         </Tabs>
-        <SheetFooter>
-          <User />
-        </SheetFooter>
       </SheetContent>
     </Sheet>
   );
