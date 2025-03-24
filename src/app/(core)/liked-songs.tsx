@@ -56,7 +56,6 @@ export default function LikedSongs() {
 
   return (
     <InfiniteScrollContainer
-      className="space-y-2"
       onBottomReached={() => hasNextPage && !isFetching && fetchNextPage()}
     >
       {data?.pages.map((page, pageIndex) =>

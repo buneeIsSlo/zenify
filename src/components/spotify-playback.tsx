@@ -73,6 +73,8 @@ const SpotifyPlayback = () => {
             currentTrackUri: currentTrack.uri,
             isPlaying: !state.paused,
             duration: state.duration,
+            isBuffering: false,
+            loadingTrackUri: null,
           });
         },
       );

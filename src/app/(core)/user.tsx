@@ -13,7 +13,6 @@ export default function User() {
   return (
     <div className="flex items-center justify-between">
       <p>{name}</p>
-      <Button className="bg-destructive">Sign out</Button>
     </div>
   );
 }

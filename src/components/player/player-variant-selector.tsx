@@ -14,7 +14,7 @@ export const PlayerVariantSelector = () => {
   ];
 
   return (
-    <div className="top-15 fixed left-4 z-50 flex gap-2">
+    <div className="flex gap-2">
       {variants.map((variant) => (
         <Button
           key={variant.value}

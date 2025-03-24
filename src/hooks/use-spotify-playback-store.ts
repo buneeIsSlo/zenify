@@ -10,6 +10,8 @@ interface SpotifyPlaybackStore {
     position: number;
     duration: number;
     currentIndex: number;
+    isBuffering: boolean;
+    loadingTrackUri: string | null;
   };
   player: Spotify.Player | null;
   playerVariant: PlayerVariant;
@@ -25,6 +27,7 @@ interface SpotifyPlaybackStore {
   previousTrack: () => Promise<void>;
   addTracksToQueue: (uris: string[]) => void;
   playTrackAt: (uri: string, index: number) => void;
+  findTrackByName: (name: string, artist: string) => boolean;
 }
 
 export const useSpotifyPlaybackStore = create<SpotifyPlaybackStore>(
@@ -36,9 +39,11 @@ export const useSpotifyPlaybackStore = create<SpotifyPlaybackStore>(
       position: 0,
       duration: 0,
       currentIndex: -1,
+      isBuffering: false,
+      loadingTrackUri: null,
     },
     player: null,
-    playerVariant: "basic",
+    playerVariant: "expanded",
     trackQueue: {
       uris: [],
       currentIndex: -1,
@@ -89,6 +94,8 @@ export const useSpotifyPlaybackStore = create<SpotifyPlaybackStore>(
           currentTrackUri: uri,
           isPlaying: true,
           currentIndex: index,
+          loadingTrackUri: uri,
+          isBuffering: true,
         },
       }));
     },
@@ -137,6 +144,15 @@ export const useSpotifyPlaybackStore = create<SpotifyPlaybackStore>(
       } catch (error) {
         console.error("Error going to previous track:", error);
       }
+    },
+    findTrackByName: (name: string, artist: string) => {
+      const { playback } = get();
+      if (!playback.currentTrack) return false;
+
+      const currentTrackName = playback.currentTrack.name;
+      const currentArtistName = playback.currentTrack.artists[0].name;
+
+      return currentTrackName === name && currentArtistName === artist;
     },
   }),
 );
