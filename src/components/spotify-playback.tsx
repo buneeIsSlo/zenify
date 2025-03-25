@@ -18,9 +18,18 @@ const SpotifyPlayback = () => {
     playerVariant,
     nextTrack,
     previousTrack,
+    setVolume,
+    toggleMute,
   } = useSpotifyPlaybackStore();
-  const { currentTrack, currentTrackUri, isPlaying, position, duration } =
-    playback;
+  const {
+    currentTrack,
+    currentTrackUri,
+    isPlaying,
+    position,
+    duration,
+    volume,
+    isMuted,
+  } = playback;
 
   const { data } = useQuery({
     queryKey: ["access-token"],
@@ -167,6 +176,10 @@ const SpotifyPlayback = () => {
       onSeek: handleSeek,
       onNext: nextTrack,
       onPrevious: previousTrack,
+      volume,
+      isMuted,
+      onVolumeChange: setVolume,
+      onToggleMute: toggleMute,
     };
 
     switch (playerVariant) {

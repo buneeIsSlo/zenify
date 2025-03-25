@@ -1,8 +1,16 @@
 import { Button } from "@/components/ui/button";
-import { Pause, Play, SkipBack, SkipForward } from "lucide-react";
+import {
+  Pause,
+  Play,
+  SkipBack,
+  SkipForward,
+  Volume2,
+  VolumeX,
+} from "lucide-react";
 import { PlaybackProgress } from "@/app/(core)/playback-progress";
 import { PlayerUIProps } from "./basic";
 import { EmptyState } from "./empty-state";
+import { Slider } from "@/components/ui/slider";
 
 export const ExpandedPlayer = ({
   currentTrack,
@@ -13,13 +21,17 @@ export const ExpandedPlayer = ({
   onSeek,
   onNext,
   onPrevious,
+  volume,
+  isMuted,
+  onVolumeChange,
+  onToggleMute,
 }: PlayerUIProps) => {
   if (!currentTrack) {
     return <EmptyState />;
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 p-4 text-white">
+    <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-indigo-500/40 via-purple-500/20 to-pink-500/20 p-4 text-white backdrop-blur-2xl">
       <div className="flex flex-col items-center gap-3">
         {currentTrack?.album.images[0]?.url && (
           <img
@@ -79,6 +91,29 @@ export const ExpandedPlayer = ({
           >
             <SkipForward className="size-5" />
           </Button>
+        </div>
+
+        <div className="flex w-full max-w-[200px] items-center gap-2">
+          <Button
+            size="icon"
+            variant="ghost"
+            className="text-white hover:bg-white/20"
+            onClick={onToggleMute}
+          >
+            {isMuted || volume === 0 ? (
+              <VolumeX className="size-5" />
+            ) : (
+              <Volume2 className="size-5" />
+            )}
+          </Button>
+          <Slider
+            value={[volume * 100]}
+            min={0}
+            max={100}
+            step={1}
+            className="flex-1"
+            onValueChange={(value) => onVolumeChange(value[0] / 100)}
+          />
         </div>
       </div>
     </div>

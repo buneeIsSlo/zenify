@@ -12,6 +12,9 @@ interface SpotifyPlaybackStore {
     currentIndex: number;
     isBuffering: boolean;
     loadingTrackUri: string | null;
+    volume: number;
+    isMuted: boolean;
+    previousVolume: number;
   };
   player: Spotify.Player | null;
   playerVariant: PlayerVariant;
@@ -28,6 +31,8 @@ interface SpotifyPlaybackStore {
   addTracksToQueue: (uris: string[]) => void;
   playTrackAt: (uri: string, index: number) => void;
   findTrackByName: (name: string, artist: string) => boolean;
+  setVolume: (volume: number) => Promise<void>;
+  toggleMute: () => Promise<void>;
 }
 
 export const useSpotifyPlaybackStore = create<SpotifyPlaybackStore>(
@@ -41,6 +46,9 @@ export const useSpotifyPlaybackStore = create<SpotifyPlaybackStore>(
       currentIndex: -1,
       isBuffering: false,
       loadingTrackUri: null,
+      volume: 0.5,
+      isMuted: false,
+      previousVolume: 0.5,
     },
     player: null,
     playerVariant: "expanded",
@@ -153,6 +161,43 @@ export const useSpotifyPlaybackStore = create<SpotifyPlaybackStore>(
       const currentArtistName = playback.currentTrack.artists[0].name;
 
       return currentTrackName === name && currentArtistName === artist;
+    },
+    setVolume: async (volume) => {
+      const { player } = get();
+      if (!player) return;
+
+      try {
+        await player.setVolume(volume);
+        set((state) => ({
+          playback: {
+            ...state.playback,
+            volume,
+            isMuted: volume === 0,
+            previousVolume:
+              volume === 0 ? state.playback.previousVolume : volume,
+          },
+        }));
+      } catch (error) {
+        console.error("Error setting volume:", error);
+      }
+    },
+    toggleMute: async () => {
+      const { player, playback } = get();
+      if (!player) return;
+
+      try {
+        const newVolume = playback.isMuted ? playback.previousVolume : 0;
+        await player.setVolume(newVolume);
+        set((state) => ({
+          playback: {
+            ...state.playback,
+            volume: newVolume,
+            isMuted: !state.playback.isMuted,
+          },
+        }));
+      } catch (error) {
+        console.log("Error toggling mute: ", error);
+      }
     },
   }),
 );

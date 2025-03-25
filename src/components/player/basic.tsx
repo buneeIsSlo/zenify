@@ -12,6 +12,10 @@ export interface PlayerUIProps {
   onSeek: (position: number) => void;
   onNext: () => void;
   onPrevious: () => void;
+  volume: number;
+  isMuted: boolean;
+  onVolumeChange: (volume: number) => void;
+  onToggleMute: () => void;
 }
 
 export const BasicPlayer = ({
