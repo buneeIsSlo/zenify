@@ -4,8 +4,11 @@ import {
   SheetContent,
   SheetTrigger,
   SheetClose,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
 } from "@/components/ui/sheet";
-import { Cog, Music, X } from "lucide-react";
+import { Cog, PanelRight, Music, X } from "lucide-react";
 import LikedSongs from "./liked-songs";
 import User from "./user";
 import { useRef, useState } from "react";
@@ -43,10 +46,17 @@ export default function Sidebar() {
     >
       <SheetTrigger asChild>
         <Button variant={"secondary"} size={"icon"}>
-          <Music className="size-5" />
+          <PanelRight className="size-5" />
         </Button>
       </SheetTrigger>
       <SheetContent className="overflow-y-scroll p-0" hideDefaultClosebutton>
+        <SheetHeader className="sr-only">
+          <SheetTitle>Music & Settings</SheetTitle>
+          <SheetDescription>
+            browse your liked songs and adjust settings to customize your
+            playback experience
+          </SheetDescription>
+        </SheetHeader>
         <div className="mb-6 flex w-full items-center justify-between">
           <User />
           <SheetClose>
