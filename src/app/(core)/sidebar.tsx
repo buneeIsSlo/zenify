@@ -57,7 +57,7 @@ export default function Sidebar() {
             playback experience
           </SheetDescription>
         </SheetHeader>
-        <div className="mb-6 flex w-full items-center justify-between">
+        <div className="mb-6 flex w-full items-center justify-between border-b-[1px] p-3">
           <User />
           <SheetClose>
             <X className="size-4" />
