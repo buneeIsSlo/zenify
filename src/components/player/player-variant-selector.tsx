@@ -1,4 +1,10 @@
-import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   PlayerVariant,
   useSpotifyPlaybackStore,
@@ -7,24 +13,24 @@ import {
 export const PlayerVariantSelector = () => {
   const { playerVariant, setPlayerVariant } = useSpotifyPlaybackStore();
 
-  const variants: { label: string; value: PlayerVariant }[] = [
-    { label: "Basic", value: "basic" },
-    { label: "Compact", value: "compact" },
-    { label: "Expanded", value: "expanded" },
-  ];
-
   return (
-    <div className="flex gap-2">
-      {variants.map((variant) => (
-        <Button
-          key={variant.value}
-          size="sm"
-          variant={playerVariant === variant.value ? "default" : "outline"}
-          onClick={() => setPlayerVariant(variant.value)}
-        >
-          {variant.label}
-        </Button>
-      ))}
+    <div className="space-y-2">
+      <label className="text-sm font-medium leading-none text-muted-foreground">
+        Player style
+      </label>
+      <Select
+        value={playerVariant}
+        onValueChange={(value) => setPlayerVariant(value as PlayerVariant)}
+      >
+        <SelectTrigger>
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="basic">Basic</SelectItem>
+          <SelectItem value="compact">Compact</SelectItem>
+          <SelectItem value="expanded">Expanded</SelectItem>
+        </SelectContent>
+      </Select>
     </div>
   );
 };

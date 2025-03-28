@@ -95,10 +95,7 @@ export default function Sidebar() {
           >
             <LikedSongs />
           </TabsContent>
-          <TabsContent
-            value="settings"
-            className="mt-0 space-y-6 p-4 text-xs text-muted-foreground"
-          >
+          <TabsContent value="settings" className="mt-0 space-y-8 p-4 text-xs">
             <PlayerVariantSelector />
             <AnimatedBackgroundsSelector />
           </TabsContent>
