@@ -15,6 +15,7 @@ import { useRef, useState } from "react";
 import { useSpotifyPlaybackStore } from "@/hooks/use-spotify-playback-store";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PlayerVariantSelector } from "@/components/player/player-variant-selector";
+import AnimatedBackgroundsSelector from "@/components/animated-backgrounds-selector";
 
 export default function Sidebar() {
   const contentRef = useRef<HTMLDivElement>(null);
@@ -42,7 +43,7 @@ export default function Sidebar() {
           setTimeout(scrollToCurrentTrack, 300);
         }
       }}
-      defaultOpen
+      modal={false}
     >
       <SheetTrigger asChild>
         <Button variant={"secondary"} size={"icon"}>
@@ -96,9 +97,10 @@ export default function Sidebar() {
           </TabsContent>
           <TabsContent
             value="settings"
-            className="mt-0 p-4 text-center text-xs text-muted-foreground"
+            className="mt-0 space-y-6 p-4 text-xs text-muted-foreground"
           >
             <PlayerVariantSelector />
+            <AnimatedBackgroundsSelector />
           </TabsContent>
         </Tabs>
       </SheetContent>
