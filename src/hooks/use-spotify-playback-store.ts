@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export type PlayerVariant = "basic" | "compact" | "expanded";
+export type PlayerVariant = "classic" | "vinyl" | "passport";
 
 interface SpotifyPlaybackStore {
   playback: {
@@ -51,7 +51,7 @@ export const useSpotifyPlaybackStore = create<SpotifyPlaybackStore>(
       previousVolume: 0.5,
     },
     player: null,
-    playerVariant: "expanded",
+    playerVariant: "classic",
     trackQueue: {
       uris: [],
       currentIndex: -1,

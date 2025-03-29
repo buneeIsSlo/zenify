@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useSpotifyPlaybackStore } from "@/hooks/use-spotify-playback-store";
-import { CompactPlayer } from "./player/compact";
-import { ExpandedPlayer } from "./player/expanded";
-import { BasicPlayer } from "./player/basic";
+import { ClassicPlayer } from "./player/classic";
+import { VinylPlayer } from "./player/vinyl";
+import { PassportPlayer } from "./player/passport";
 
 const SpotifyPlayback = () => {
   const [deviceId, setDeviceId] = useState<string | null>(null);
@@ -183,13 +183,14 @@ const SpotifyPlayback = () => {
     };
 
     switch (playerVariant) {
-      case "compact":
-        return <CompactPlayer {...props} />;
-      case "expanded":
-        return <ExpandedPlayer {...props} />;
-      case "basic":
+      case "classic":
+        return <ClassicPlayer {...props} />;
+      case "vinyl":
+        return <VinylPlayer {...props} />;
+      case "passport":
+        return <PassportPlayer {...props} />;
       default:
-        return <BasicPlayer {...props} />;
+        return <ClassicPlayer {...props} />;
     }
   };
 
