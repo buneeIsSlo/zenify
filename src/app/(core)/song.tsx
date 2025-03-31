@@ -10,7 +10,7 @@ interface SongProps {
 export default function Song({ track, index }: SongProps) {
   const { playback, playTrackAt, togglePlayback, findTrackByName } =
     useSpotifyPlaybackStore();
-  const { isPlaying, currentTrack, loadingTrackUri } = playback;
+  const { isPlaying, loadingTrackUri } = playback;
 
   const isCurrentTrack = findTrackByName(track.name, track.artists[0].name);
   const isLoading = loadingTrackUri === track.uri;

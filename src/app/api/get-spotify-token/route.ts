@@ -46,7 +46,7 @@ export async function GET() {
     }
 
     return NextResponse.json({ accessToken });
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error refreshing/verifying token:", error);
     return NextResponse.json(
       { error: "Failed to refresh/verify token" },

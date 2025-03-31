@@ -3,6 +3,8 @@
 import Sidebar from "./sidebar";
 import SpotifyPlayback from "@/components/spotify-playback";
 import { useBackgroundStore } from "@/components/animated-backgrounds-selector";
+import logo from "@/assets/zenify.svg";
+import Image from "next/image";
 
 export default function Page() {
   const { component: AnimatedBackground } = useBackgroundStore();
@@ -13,7 +15,10 @@ export default function Page() {
         <AnimatedBackground />
       </div>
       <header className="flex items-center justify-between p-4">
-        <h1 className="text-3xl font-bold">Zenify</h1>
+        <div className="flex cursor-default items-center gap-2">
+          <Image src={logo} alt="zenify" className="size-10" />
+          <h1 className="text-3xl font-bold">Zenify</h1>
+        </div>
         <Sidebar />
       </header>
       <main className="relative flex-1 p-5">

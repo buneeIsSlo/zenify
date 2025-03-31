@@ -47,6 +47,7 @@ const SpotifyPlayback = () => {
 
   useEffect(() => {
     console.log("Player state:", { player, deviceId, currentTrack, isPlaying });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [player, deviceId, currentTrack, isPlaying]);
 
   useEffect(() => {
@@ -100,6 +101,7 @@ const SpotifyPlayback = () => {
     return () => {
       if (player) (player as Spotify.Player).disconnect();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accessToken]);
 
   useEffect(() => {
@@ -112,6 +114,7 @@ const SpotifyPlayback = () => {
         playTrack(deviceId, accessToken);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [player, deviceId, currentTrackUri]);
 
   useEffect(() => {
@@ -126,6 +129,7 @@ const SpotifyPlayback = () => {
     }, 1000);
 
     return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [player, isPlaying]);
 
   const playTrack = async (deviceId: string, accessToken: string) => {

@@ -1,5 +1,4 @@
 import ConnectSpotifyButton from "./connect-spotify-button";
-import Link from "next/link";
 
 export default function Signin() {
   return (
@@ -15,13 +14,6 @@ export default function Signin() {
 
         <div className="flex flex-col items-center gap-4">
           <ConnectSpotifyButton />
-          <span className="text-zinc-600">or</span>
-          <Link
-            href="#"
-            className="text-zinc-400 hover:text-green-600 hover:underline"
-          >
-            Try a demo
-          </Link>
         </div>
       </div>
     </div>

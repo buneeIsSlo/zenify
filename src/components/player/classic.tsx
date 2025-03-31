@@ -48,12 +48,12 @@ export const ClassicPlayer = ({
     <div className="fixed bottom-0 left-0 right-0 bg-black/95 text-white">
       <div className="mx-auto flex max-w-screen-xl gap-6 p-4">
         {/* Album art section */}
-        <div className="flex-shrink-0">
+        <div className="hidden flex-shrink-0 md:block">
           {currentTrack?.album.images[0]?.url && (
             <img
               src={currentTrack.album.images[0].url}
               alt="Album cover"
-              className="h-16 w-16 rounded-md shadow-md"
+              className="size-10 rounded-md md:size-20"
             />
           )}
         </div>
@@ -67,7 +67,7 @@ export const ClassicPlayer = ({
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col items-center gap-2 md:flex-row">
             <div className="flex items-center">
               <Button
                 size="icon"
@@ -101,7 +101,7 @@ export const ClassicPlayer = ({
               </Button>
             </div>
 
-            <div className="flex flex-1 items-center gap-2 px-2">
+            <div className="flex w-full flex-1 items-center gap-2 px-2">
               <span className="w-10 text-xs text-gray-400">
                 {formatTime(position)}
               </span>
@@ -121,38 +121,39 @@ export const ClassicPlayer = ({
                 {formatTime(duration)}
               </span>
             </div>
+
+            <div className="flex w-32 items-center gap-2">
+              <Button
+                size="icon"
+                variant="ghost"
+                className="h-8 w-8 text-gray-400 hover:text-white"
+                onClick={onToggleMute}
+              >
+                {isMuted || volume === 0 ? (
+                  <VolumeX className="size-4" />
+                ) : (
+                  <Volume2 className="size-4" />
+                )}
+              </Button>
+              <Slider
+                value={[volume * 100]}
+                min={0}
+                max={100}
+                step={1}
+                className="flex-1"
+                thumbVariant="hover"
+                trackHeight="sm"
+                thumbSize="sm"
+                trackColor="bg-gray-700"
+                rangeColor="bg-white"
+                thumbColor="border-white"
+                onValueChange={(value) => onVolumeChange(value[0] / 100)}
+              />
+            </div>
           </div>
         </div>
 
         {/* Volume control */}
-        <div className="flex w-32 items-center gap-2">
-          <Button
-            size="icon"
-            variant="ghost"
-            className="h-8 w-8 text-gray-400 hover:text-white"
-            onClick={onToggleMute}
-          >
-            {isMuted || volume === 0 ? (
-              <VolumeX className="size-4" />
-            ) : (
-              <Volume2 className="size-4" />
-            )}
-          </Button>
-          <Slider
-            value={[volume * 100]}
-            min={0}
-            max={100}
-            step={1}
-            className="flex-1"
-            thumbVariant="hover"
-            trackHeight="sm"
-            thumbSize="sm"
-            trackColor="bg-gray-700"
-            rangeColor="bg-white"
-            thumbColor="border-white"
-            onValueChange={(value) => onVolumeChange(value[0] / 100)}
-          />
-        </div>
       </div>
     </div>
   );

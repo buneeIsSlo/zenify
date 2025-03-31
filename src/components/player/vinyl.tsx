@@ -44,13 +44,12 @@ export const VinylPlayer = ({
             >
               {/* Center label */}
               <div className="absolute left-1/2 top-1/2 h-20 w-20 -translate-x-1/2 -translate-y-1/2 transform overflow-hidden rounded-full border-4 border-white shadow-inner">
-                {currentTrack?.album.images[0]?.url && (
-                  <img
-                    src={currentTrack.album.images[0].url}
-                    alt="Album label"
-                    className="h-full w-full object-cover"
-                  />
-                )}
+                <img
+                  src={currentTrack.album.images[0].url}
+                  alt="Album cover"
+                  className="size-10 rounded-md"
+                  style={{ width: "100%", height: "auto" }}
+                />
               </div>
             </div>
           </div>

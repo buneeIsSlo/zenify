@@ -11,10 +11,8 @@ export const auth = betterAuth({
       clientId: process.env.SPOTIFY_CLIENT_ID as string,
       clientSecret: process.env.SPOTIFY_CLIENT_SECRET as string,
       scope: [
-        "user-read-private",
         "user-read-email",
         "user-library-read",
-        "playlist-read-private",
         "streaming",
         "user-modify-playback-state",
         "user-read-playback-state",
