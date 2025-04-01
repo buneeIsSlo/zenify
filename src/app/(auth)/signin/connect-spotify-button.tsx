@@ -25,7 +25,7 @@ export default function ConnectSpotifyButton() {
 
   return (
     <Button
-      className="bg-green-400 text-primary hover:bg-green-500"
+      className="bg-green-500 text-primary hover:bg-green-600"
       size={"lg"}
       onClick={handleSubmit}
     >

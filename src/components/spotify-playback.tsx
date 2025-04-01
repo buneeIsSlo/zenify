@@ -46,11 +46,6 @@ const SpotifyPlayback = () => {
   const accessToken = data?.accessToken;
 
   useEffect(() => {
-    console.log("Player state:", { player, deviceId, currentTrack, isPlaying });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [player, deviceId, currentTrack, isPlaying]);
-
-  useEffect(() => {
     if (!accessToken) return;
 
     window.onSpotifyWebPlaybackSDKReady = () => {
@@ -66,7 +61,6 @@ const SpotifyPlayback = () => {
       spotifyPlayer.addListener(
         "ready",
         ({ device_id }: Spotify.WebPlaybackInstance) => {
-          console.log("Player ready with device ID:", device_id);
           setDeviceId(device_id);
         },
       );
@@ -105,7 +99,6 @@ const SpotifyPlayback = () => {
   }, [accessToken]);
 
   useEffect(() => {
-    console.log(`currentTrackUri changed: ${currentTrackUri}`);
     if (player && deviceId && currentTrackUri) {
       const { trackQueue } = useSpotifyPlaybackStore.getState();
       const isManualChange =
@@ -140,7 +133,6 @@ const SpotifyPlayback = () => {
 
     try {
       const { trackQueue } = useSpotifyPlaybackStore.getState();
-      console.log("Playing track with queue:", trackQueue);
 
       const response = await fetch(
         `https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`,
